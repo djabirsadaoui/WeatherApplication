@@ -13,10 +13,25 @@
 import UIKit
 
 protocol ShowWeatherDetailDisplayLogic: class {
-    func displaySomething(viewModel: ShowWeatherDetail.Something.ViewModel)
+    func displayWeatherDetailSuccess(viewModel: WeatherDetail.Success.ViewModel)
+    func displayWeatherDetailFailure(viewModel: WeatherDetail.Failure.ViewModel)
 }
 
 class ShowWeatherDetailViewController: UIViewController, ShowWeatherDetailDisplayLogic {
+    // MARK: Outlets
+    @IBOutlet weak var imageView: UIImageView!
+    @IBOutlet weak var descreptionLabel: UILabel!
+    @IBOutlet weak var tempLabel: UILabel!
+    @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
+    @IBOutlet weak var sunriseLabel: UILabel!
+    @IBOutlet weak var sunsetLabel: UILabel!
+    @IBOutlet weak var humidityLabel: UILabel!
+    @IBOutlet weak var feelsLikeLabel: UILabel!
+    @IBOutlet weak var windSpeedLabel: UILabel!
+    @IBOutlet weak var visibilityLabel: UILabel!
+    @IBOutlet weak var pressureLabel: UILabel!
+    
+    // MARK: Vars
     var interactor: ShowWeatherDetailBusinessLogic?
     var router: (NSObjectProtocol & ShowWeatherDetailRoutingLogic & ShowWeatherDetailDataPassing)?
     
@@ -35,12 +50,17 @@ class ShowWeatherDetailViewController: UIViewController, ShowWeatherDetailDispla
         super.viewDidLoad()
         configure()
     }
-    
-    // MARK: configure a view
-    func configure(){
-        let request = ShowWeatherDetail.Something.Request()
-        interactor?.doSomething(request: request)
+    override func viewDidDisappear(_ animated: Bool) {
+        self.cleanView()
     }
+    
+    // MARK: configure
+    func configure(){
+        self.title = interactor?.currentCity?.cityName
+        interactor?.getCurrentAndForcastWeather()
+        startAmination()
+    }
+    
     // MARK: Setup
     private func setup() {
         let viewController = self
@@ -57,18 +77,44 @@ class ShowWeatherDetailViewController: UIViewController, ShowWeatherDetailDispla
         router.dataStore = interactor
     }
     
-    // MARK: Routing
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if let scene = segue.identifier {
-            let selector = NSSelectorFromString("routeTo\(scene)WithSegue:")
-            if let router = router, router.responds(to: selector) {
-                router.perform(selector, with: segue)
-            }
+    // MARK: Display
+    func displayWeatherDetailSuccess(viewModel: WeatherDetail.Success.ViewModel) {
+        stopAnimation()
+        if let icon = viewModel.icon {
+            self.imageView.image = UIImage(named:icon)
         }
+        self.descreptionLabel.text = viewModel.description
+        self.tempLabel.text =  viewModel.temp
+        self.sunriseLabel.text = viewModel.sunrise
+        self.sunsetLabel.text = viewModel.sunset
+        self.feelsLikeLabel.text = viewModel.feelslike
+        self.pressureLabel.text = viewModel.pressure
+        self.humidityLabel.text = viewModel.humidity
+        self.windSpeedLabel.text = viewModel.winspeed
+        self.visibilityLabel.text = viewModel.visibility
+    }
+    func displayWeatherDetailFailure(viewModel: WeatherDetail.Failure.ViewModel) {
+        let alert = UIAlertController(title: "Alert", message: viewModel.error, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "Close", style: .default, handler: { action in
+            self.dismiss(animated: false, completion: nil)
+            self.navigationController?.popViewController(animated: true)
+        }))
+        self.present(alert, animated: true, completion: nil)
     }
     
-    // MARK: Display
-    func displaySomething(viewModel: ShowWeatherDetail.Something.ViewModel) {
-        //nameTextField.text = viewModel.name
+    private func cleanView() {
+        self.imageView = nil
+        self.descreptionLabel.text = ""
+        self.tempLabel.text = ""
+    }
+    private func startAmination() {
+        activityIndicator.isHidden = false
+        activityIndicator.startAnimating()
+    }
+    private func stopAnimation() {
+        activityIndicator.isHidden = true
+        activityIndicator.stopAnimating()
     }
 }
+
+

@@ -10,26 +10,38 @@
 //  see http://clean-swift.com
 //
 
-import Foundation
+import WeatherApi
 
 protocol ShowWeatherDetailBusinessLogic {
-  func doSomething(request: ShowWeatherDetail.Something.Request)
+    var currentCity: City? { get set }
+    func getCurrentAndForcastWeather()
 }
 
 protocol ShowWeatherDetailDataStore {
-  //var name: String { get set }
+    var currentCity: City? { get set }
 }
 
 class ShowWeatherDetailInteractor: ShowWeatherDetailBusinessLogic, ShowWeatherDetailDataStore {
-  var presenter: ShowWeatherDetailPresentationLogic?
-  var worker: ShowWeatherDetailWorker?
-  //var name: String = ""
-  
-  // MARK: Do something
-  
-  func doSomething(request: ShowWeatherDetail.Something.Request) {
-    worker?.doSomeWork()
-    let response = ShowWeatherDetail.Something.Response()
-    presenter?.presentSomething(response: response)
-  }
+    // MARK: Vars
+    var presenter: ShowWeatherDetailPresentationLogic?
+    var worker: ShowWeatherDetailWorker?
+    var currentCity: City?
+    
+    // MARK: Do something
+    func getCurrentAndForcastWeather() {
+        if let city = currentCity {
+            worker?.getCurrentAndForcastWeather(lat: city.lat, lon: city.lon, completion: { [weak self] (result) in
+                guard let strongSelf = self else {
+                    return
+                }
+                switch result {
+                case .success(let currentWeather):
+                    let response = WeatherDetail.Success.Response(currentWeather: currentWeather)
+                    strongSelf.presenter?.presentWeatherDetailSuccess(response: response)
+                case .failure(let error):
+                    let response = WeatherDetail.Failure.Response(error: error)
+                    strongSelf.presenter?.presentWeatherDetailFailure(response: response)
+                }})
+        }
+    }
 }

@@ -2,20 +2,25 @@
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="16097.2" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="PCx-0J-xxB">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
+        <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="16087"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
-        <!--Show Weather List View Controller-->
+        <!--Cities-->
         <scene sceneID="MOh-UW-Qcz">
             <objects>
-                <tableViewController id="K3H-eg-vvq" customClass="ShowWeatherListViewController" customModule="OpenMeteo" customModuleProvider="target" sceneMemberID="viewController">
-                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" id="get-fP-Jkj">
+                <tableViewController id="K3H-eg-vvq" customClass="ShowWeatherListViewController" customModule="WeatherApplication" customModuleProvider="target" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" id="get-fP-Jkj">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                        <color key="separatorColor" red="0.23921568630000001" green="0.35294117650000001" blue="0.50196078430000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <inset key="separatorInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
+                        <color key="sectionIndexColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <color key="sectionIndexBackgroundColor" red="0.8784313725490196" green="0.98431372549019602" blue="0.9882352941176471" alpha="1" colorSpace="calibratedRGB"/>
                         <prototypes>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="cityCell" textLabel="Zii-9S-qPq" rowHeight="72" style="IBUITableViewCellStyleDefault" id="bn5-bQ-fkQ">
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="blue" indentationWidth="10" reuseIdentifier="cityCell" textLabel="Zii-9S-qPq" rowHeight="72" style="IBUITableViewCellStyleDefault" id="bn5-bQ-fkQ">
                                 <rect key="frame" x="0.0" y="28" width="414" height="72"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="bn5-bQ-fkQ" id="psP-ih-XhS">
@@ -25,14 +30,15 @@
                                         <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" insetsLayoutMarginsFromSafeArea="NO" text="Title" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="Zii-9S-qPq">
                                             <rect key="frame" x="20" y="0.0" width="374" height="72"/>
                                             <autoresizingMask key="autoresizingMask"/>
-                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                            <nil key="textColor"/>
+                                            <fontDescription key="fontDescription" type="system" weight="medium" pointSize="20"/>
+                                            <color key="textColor" red="0.1058823529" green="0.28627450980000002" blue="0.39607843139999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                             <nil key="highlightedColor"/>
                                         </label>
                                     </subviews>
                                 </tableViewCellContentView>
+                                <color key="backgroundColor" red="0.79215686269999996" green="0.91372549020000005" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                 <connections>
-                                    <segue destination="4oh-hD-dyy" kind="show" id="gfC-Id-ycU"/>
+                                    <segue destination="4oh-hD-dyy" kind="show" identifier="WeatherDetail" id="gfC-Id-ycU"/>
                                 </connections>
                             </tableViewCell>
                         </prototypes>
@@ -42,11 +48,12 @@
                         </connections>
                     </tableView>
                     <toolbarItems/>
-                    <navigationItem key="navigationItem" id="FXJ-Cf-AYm">
-                        <barButtonItem key="rightBarButtonItem" systemItem="add" id="EdC-QE-zDg">
+                    <navigationItem key="navigationItem" title="Cities" id="FXJ-Cf-AYm">
+                        <barButtonItem key="rightBarButtonItem" style="done" systemItem="add" id="EdC-QE-zDg">
+                            <color key="tintColor" red="0.38431372549999998" green="0.71372549019999998" blue="0.79607843140000001" alpha="1" colorSpace="calibratedRGB"/>
                             <connections>
                                 <action selector="addCity:" destination="K3H-eg-vvq" id="Kla-d1-9hj"/>
-                                <segue destination="yPj-Jr-y7y" kind="presentation" modalPresentationStyle="fullScreen" id="RFP-NW-ruK"/>
+                                <segue destination="yPj-Jr-y7y" kind="presentation" identifier="AddCity" modalPresentationStyle="fullScreen" id="RFP-NW-ruK"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
@@ -64,6 +71,12 @@
                     <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="dsN-um-yBI">
                         <rect key="frame" x="0.0" y="44" width="414" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
+                        <color key="tintColor" red="0.38431372549999998" green="0.71372549019999998" blue="0.79607843140000001" alpha="1" colorSpace="calibratedRGB"/>
+                        <color key="barTintColor" red="0.10588235294117647" green="0.28627450980392155" blue="0.396078431372549" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <textAttributes key="titleTextAttributes">
+                            <color key="textColor" red="0.38431372549999998" green="0.71372549019999998" blue="0.79607843140000001" alpha="1" colorSpace="calibratedRGB"/>
+                            <color key="textShadowColor" red="0.38431372549999998" green="0.71372549019999998" blue="0.79607843140000001" alpha="1" colorSpace="calibratedRGB"/>
+                        </textAttributes>
                     </navigationBar>
                     <nil name="viewControllers"/>
                     <connections>

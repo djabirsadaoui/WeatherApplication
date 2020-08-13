@@ -13,23 +13,26 @@
 import Foundation
 
 protocol AddCityBusinessLogic {
-  func doSomething(request: AddCity.Something.Request)
+    func addCity(city: String, lat: Double, lon: Double)
 }
 
 protocol AddCityDataStore {
-  //var name: String { get set }
 }
 
 class AddCityInteractor: AddCityBusinessLogic, AddCityDataStore {
-  var presenter: AddCityPresentationLogic?
-  var worker: AddCityWorker?
-  //var name: String = ""
-  
-  // MARK: Do something
-  
-  func doSomething(request: AddCity.Something.Request) {
-    worker?.doSomeWork()
-    let response = AddCity.Something.Response()
-    presenter?.presentSomething(response: response)
-  }
+    // MARK: Vars
+    var presenter: AddCityPresentationLogic?
+    var worker: AddCityWorker?
+    
+    // MARK: Do something
+    func addCity(city: String, lat: Double, lon: Double) {
+        worker?.saveCity(cityName: city, lat: lat, lon: lon, completion: { (city, error) in
+            if let error = error {
+                let response = AddCity.Failure.Response(error: error)
+                self.presenter?.presentAddCityFailure(response: response)
+            } else {
+                self.presenter?.presentAddCitySuccess()
+            }
+        })
+    }
 }

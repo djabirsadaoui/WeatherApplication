@@ -13,16 +13,24 @@
 import Foundation
 
 protocol ShowWeatherDetailPresentationLogic {
-  func presentSomething(response: ShowWeatherDetail.Something.Response)
+    func presentWeatherDetailSuccess(response: WeatherDetail.Success.Response)
+    func presentWeatherDetailFailure(response: WeatherDetail.Failure.Response)
 }
 
 class ShowWeatherDetailPresenter: ShowWeatherDetailPresentationLogic {
-  weak var viewController: ShowWeatherDetailDisplayLogic?
-  
-  // MARK: Do something
-  
-  func presentSomething(response: ShowWeatherDetail.Something.Response) {
-    let viewModel = ShowWeatherDetail.Something.ViewModel()
-    viewController?.displaySomething(viewModel: viewModel)
-  }
+    weak var viewController: ShowWeatherDetailDisplayLogic?
+    
+    // MARK: Present something
+    func presentWeatherDetailSuccess(response: WeatherDetail.Success.Response) {
+        let currentWeather = response.currentWeather
+        let viewModel = WeatherDetail.Success.ViewModel(icon: currentWeather.weather.first?.icon, description: currentWeather.weather.first?.weatherDescription, temp: roundString(currentWeather.temp), sunrise: Date.dateString(currentWeather.sunrise), sunset: Date.dateString(currentWeather.sunset), feelslike: roundString(currentWeather.feelsLike), pressure: String(currentWeather.pressure), humidity: String(currentWeather.humidity), visibility: String(currentWeather.visibility), winspeed: String(currentWeather.windSpeed))
+        self.viewController?.displayWeatherDetailSuccess(viewModel: viewModel)
+    }
+    func presentWeatherDetailFailure(response: WeatherDetail.Failure.Response) {
+        let viewModel = WeatherDetail.Failure.ViewModel(error: response.error.localizedDescription)
+        self.viewController?.displayWeatherDetailFailure(viewModel: viewModel)
+    }
+    func roundString(_ value: Double) -> String {
+        return String(format: "%.0f", round(value))
+    }
 }

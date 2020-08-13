@@ -11,14 +11,18 @@
 //
 
 import UIKit
-
+import MapKit
 protocol AddCityDisplayLogic: class {
-    func displaySomething(viewModel: AddCity.Something.ViewModel)
+    func displayAddCityFailure(viewModel: AddCity.Failure.ViewModel)
+    func displayAddCitySuccess()
 }
 
-class AddCityViewController: UIViewController, AddCityDisplayLogic {
+class AddCityViewController: UITableViewController, AddCityDisplayLogic {
+    // MARK: Vars
     var interactor: AddCityBusinessLogic?
     var router: (NSObjectProtocol & AddCityRoutingLogic & AddCityDataPassing)?
+    let searchController = UISearchController(searchResultsController: nil)
+    var matchingItems:[MKMapItem] = []
     
     // MARK: Object lifecycle
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
@@ -39,8 +43,15 @@ class AddCityViewController: UIViewController, AddCityDisplayLogic {
     // MARK: configure a view
     func configure()
     {
-        let request = AddCity.Something.Request()
-        interactor?.doSomething(request: request)
+        tableView.dataSource = self
+        self.tableView.rowHeight = 85
+        searchController.searchResultsUpdater = self
+        searchController.dimsBackgroundDuringPresentation = false
+        searchController.searchBar.showsCancelButton = true
+        searchController.searchBar.delegate = self
+        definesPresentationContext = true
+        tableView.tableHeaderView = searchController.searchBar
+        searchController.searchBar.placeholder = "Saisir la ville, le code postal"
     }
     
     // MARK: Setup
@@ -59,18 +70,66 @@ class AddCityViewController: UIViewController, AddCityDisplayLogic {
         router.dataStore = interactor
     }
     
-    // MARK: Routing
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if let scene = segue.identifier {
-            let selector = NSSelectorFromString("routeTo\(scene)WithSegue:")
-            if let router = router, router.responds(to: selector) {
-                router.perform(selector, with: segue)
-            }
+    // MARK: Display
+    func displayAddCityFailure(viewModel: AddCity.Failure.ViewModel) {
+        func displayWeatherDetailFailure(viewModel: WeatherDetail.Failure.ViewModel) {
+            let alert = UIAlertController(title: "Alert", message: viewModel.error, preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: "Close", style: .default, handler: { action in
+                self.dismiss(animated: false) {
+                    self.dismiss(animated: true, completion: nil)
+                }
+            }))
+            self.present(alert, animated: true, completion: nil)
         }
     }
-    
-    // MARK: Display
-    func displaySomething(viewModel: AddCity.Something.ViewModel) {
-        //nameTextField.text = viewModel.name
+    func displayAddCitySuccess() {
+        self.dismiss(animated: false) {
+            self.dismiss(animated: true, completion: nil)
+        }
     }
 }
+
+// MARK: Handling TableView
+extension AddCityViewController {
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return matchingItems.count
+    }
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "cityCell")!
+        let selectedItem = matchingItems[indexPath.row].placemark
+        cell.textLabel?.text = selectedItem.name
+        let address = "\(selectedItem.name ?? ""), \(selectedItem.country ?? "")"
+        cell.detailTextLabel?.text = address
+        return cell
+    }
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        guard let cityName = self.matchingItems[indexPath.row].name else {
+            presentingViewController?.dismiss(animated: true)
+            return
+        }
+        self.interactor?.addCity(city: cityName, lat: self.matchingItems[indexPath.row].placemark.coordinate.latitude, lon: self.matchingItems[indexPath.row].placemark.coordinate.longitude)
+    }
+}
+
+// MARK: Handling SearchResult
+extension AddCityViewController: UISearchResultsUpdating, UISearchBarDelegate {
+    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+        self.dismiss(animated: false) {
+            self.dismiss(animated: true, completion: nil)
+        }
+    }
+    func updateSearchResults(for searchController: UISearchController) {
+        guard let searchBarText = searchController.searchBar.text else { return }
+        let request = MKLocalSearch.Request()
+        request.naturalLanguageQuery = searchBarText
+        let search = MKLocalSearch(request: request)
+        search.start { response, _ in
+            guard let response = response else {
+                return
+            }
+            self.matchingItems = response.mapItems
+            self.tableView.reloadData()
+        }
+    }
+}
+

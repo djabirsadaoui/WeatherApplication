@@ -12,15 +12,33 @@
 
 
 
-enum ShowWeatherDetail {
-  // MARK: Use cases
-  
-  enum Something {
-    struct Request {
+import WeatherApi
+
+enum WeatherDetail {
+    enum Success {
+        struct Response {
+            var currentWeather: Current
+        }
+        struct ViewModel {
+            var icon: String?
+            var description: String?
+            var temp: String?
+            var sunrise: String?
+            var sunset: String?
+            var feelslike: String?
+            var pressure: String?
+            var humidity: String?
+            var visibility: String?
+            var winspeed: String?
+        }
     }
-    struct Response {
+    enum Failure {
+        struct Response {
+            var error: Error
+        }
+        struct ViewModel {
+            var error: String
+        }
     }
-    struct ViewModel {
-    }
-  }
 }
+

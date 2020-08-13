@@ -13,45 +13,30 @@
 import UIKit
 
 @objc protocol ShowWeatherListRoutingLogic {
-  //func routeToSomewhere(segue: UIStoryboardSegue?)
+    func routeToWeatherDetail(segue: UIStoryboardSegue?)
 }
 
 protocol ShowWeatherListDataPassing {
-  var dataStore: ShowWeatherListDataStore? { get }
+    var dataStore: ShowWeatherListDataStore? { get }
 }
 
 class ShowWeatherListRouter: NSObject, ShowWeatherListRoutingLogic, ShowWeatherListDataPassing {
-  weak var viewController: ShowWeatherListViewController?
-  var dataStore: ShowWeatherListDataStore?
-  
-  // MARK: Routing
-  
-  //func routeToSomewhere(segue: UIStoryboardSegue?)
-  //{
-  //  if let segue = segue {
-  //    let destinationVC = segue.destination as! SomewhereViewController
-  //    var destinationDS = destinationVC.router!.dataStore!
-  //    passDataToSomewhere(source: dataStore!, destination: &destinationDS)
-  //  } else {
-  //    let storyboard = UIStoryboard(name: "Main", bundle: nil)
-  //    let destinationVC = storyboard.instantiateViewController(withIdentifier: "SomewhereViewController") as! SomewhereViewController
-  //    var destinationDS = destinationVC.router!.dataStore!
-  //    passDataToSomewhere(source: dataStore!, destination: &destinationDS)
-  //    navigateToSomewhere(source: viewController!, destination: destinationVC)
-  //  }
-  //}
-
-  // MARK: Navigation
-  
-  //func navigateToSomewhere(source: ShowWeatherListViewController, destination: SomewhereViewController)
-  //{
-  //  source.show(destination, sender: nil)
-  //}
-  
-  // MARK: Passing data
-  
-  //func passDataToSomewhere(source: ShowWeatherListDataStore, destination: inout SomewhereDataStore)
-  //{
-  //  destination.name = source.name
-  //}
+    weak var viewController: ShowWeatherListViewController?
+    var dataStore: ShowWeatherListDataStore?
+    
+    // MARK: Routing
+    func routeToWeatherDetail(segue: UIStoryboardSegue?)
+    {
+        if let segue = segue {
+            let destinationVC = segue.destination as! ShowWeatherDetailViewController
+            var destinationDS = destinationVC.router!.dataStore!
+            passDataToShowWeatherDetail(source: dataStore!, destination: &destinationDS)
+        }
+    }
+    
+    // MARK: Passing data
+    func passDataToShowWeatherDetail(source: ShowWeatherListDataStore, destination: inout ShowWeatherDetailDataStore)
+    {
+        destination.currentCity = source.currentCity
+    }
 }

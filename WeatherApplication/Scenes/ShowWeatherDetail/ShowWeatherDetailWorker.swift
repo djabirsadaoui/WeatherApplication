@@ -10,11 +10,21 @@
 //  see http://clean-swift.com
 //
 
-import Foundation
+import WeatherApi
 protocol ShowWeatherDetailWorkerProtocol {
-    func doSomeWork()
+    var weatherService: WeatherService {get set}
+    func getCurrentAndForcastWeather(lat: Double, lon: Double, completion: @escaping (Result<Current,WeatherError>)->Void)
 }
-class ShowWeatherDetailWorker{
-  func doSomeWork() {
-  }
+class ShowWeatherDetailWorker: ShowWeatherDetailWorkerProtocol{
+    // MARK: Vars
+    var weatherService = WeatherService.shared
+    
+    // MARK: Works
+    func getCurrentAndForcastWeather(lat: Double, lon: Double, completion: @escaping (Result<Current, WeatherError>) -> Void) {
+        weatherService.getCurrentAndForcastWeather(lat: String(lat), lon: String(lon)) { (result) in
+            DispatchQueue.main.async {
+                completion(result)
+            }
+        }
+    }
 }

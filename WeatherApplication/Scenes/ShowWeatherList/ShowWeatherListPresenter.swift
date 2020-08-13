@@ -13,16 +13,15 @@
 import Foundation
 
 protocol ShowWeatherListPresentationLogic {
-  func presentSomething(response: ShowWeatherList.Something.Response)
+    func presentCities()
 }
 
 class ShowWeatherListPresenter: ShowWeatherListPresentationLogic {
-  weak var viewController: ShowWeatherListDisplayLogic?
-  
-  // MARK: Do something
-  
-  func presentSomething(response: ShowWeatherList.Something.Response) {
-    let viewModel = ShowWeatherList.Something.ViewModel()
-    viewController?.displaySomething(viewModel: viewModel)
-  }
+    //MARK: Vars
+    weak var viewController: ShowWeatherListDisplayLogic?
+    
+    // MARK: Present views
+    func presentCities(){
+        viewController?.displayCities()
+    }
 }

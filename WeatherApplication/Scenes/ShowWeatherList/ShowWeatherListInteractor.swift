@@ -10,26 +10,30 @@
 //  see http://clean-swift.com
 //
 
-import Foundation
+import WeatherApi
 
 protocol ShowWeatherListBusinessLogic {
-  func doSomething(request: ShowWeatherList.Something.Request)
+    var currentCity: City? { get set }
+    var cities: [City] {get set}
+    func getAllCities()
 }
 
 protocol ShowWeatherListDataStore {
-  //var name: String { get set }
+    var currentCity: City? { get set }
 }
 
 class ShowWeatherListInteractor: ShowWeatherListBusinessLogic, ShowWeatherListDataStore {
-  var presenter: ShowWeatherListPresentationLogic?
-  var worker: ShowWeatherListWorker?
-  //var name: String = ""
-  
-  // MARK: Do something
-  
-  func doSomething(request: ShowWeatherList.Something.Request) {
-    worker?.doSomeWork()
-    let response = ShowWeatherList.Something.Response()
-    presenter?.presentSomething(response: response)
-  }
+    // MARK: Vars
+    var cities: [City] = []
+    var presenter: ShowWeatherListPresentationLogic?
+    var worker: ShowWeatherListWorker?
+    var currentCity: City?
+    
+    // MARK: Do something
+    func getAllCities() {
+        worker?.fetchCities(completion: { (cities) in
+            self.cities = cities ?? []
+            self.presenter?.presentCities()
+        })
+    }
 }

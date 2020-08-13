@@ -11,14 +11,16 @@
 //
 
 import UIKit
-
+import MapKit
 protocol ShowWeatherListDisplayLogic: class {
-    func displaySomething(viewModel: ShowWeatherList.Something.ViewModel)
+    func displayCities()
 }
 
-class ShowWeatherListViewController: UITableViewController, ShowWeatherListDisplayLogic {
+class ShowWeatherListViewController: UITableViewController, ShowWeatherListDisplayLogic, UIAdaptivePresentationControllerDelegate {
+    // MARK: Vars
     var interactor: ShowWeatherListBusinessLogic?
     var router: (NSObjectProtocol & ShowWeatherListRoutingLogic & ShowWeatherListDataPassing)?
+    var resultSearchController:UISearchController? = nil
     
     // MARK: Object lifecycle
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
@@ -35,13 +37,17 @@ class ShowWeatherListViewController: UITableViewController, ShowWeatherListDispl
         super.viewDidLoad()
         configure()
     }
+    override func viewWillAppear(_ animated: Bool) {
+        self.interactor?.getAllCities()
+    }
     
     // MARK: configure a view
     func configure()
     {
-        self.tableView.rowHeight = 87
+        self.tableView.delegate = self
+        self.tableView.rowHeight = 85
+        self.interactor?.getAllCities()
     }
-    
     // MARK: Setup
     private func setup() {
         let viewController = self
@@ -69,33 +75,28 @@ class ShowWeatherListViewController: UITableViewController, ShowWeatherListDispl
     }
     
     // MARK: Display
-    func displaySomething(viewModel: ShowWeatherList.Something.ViewModel) {
-        //nameTextField.text = viewModel.name
+    func displayCities() {
+        tableView.reloadData()
     }
 }
-
+// MARK: Handling TableView
 extension ShowWeatherListViewController {
-    
-    
-    //MARK: Handling data source
-    override func numberOfSections(in tableView: UITableView) -> Int {
-        return 1
-    }
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 6
+        return self.interactor?.cities.count ?? 0
     }
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         if let cell = tableView.dequeueReusableCell(withIdentifier: "cityCell")   {
-            cell.textLabel?.text = "City \(indexPath.row)"
+            cell.textLabel?.text = self.interactor?.cities[indexPath.row].cityName
             return cell
         }
         let cell = UITableViewCell()
-        cell.textLabel?.text = "City \(indexPath.row)"
+        cell.textLabel?.text = self.interactor?.cities[indexPath.row].cityName
         return cell
     }
-    
-    // MARK: Handling tableView
-    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        
+    override func tableView(_ tableView: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath? {
+        if let city = self.interactor?.cities[indexPath.row] {
+            self.interactor?.currentCity = city
+        }
+        return indexPath
     }
 }

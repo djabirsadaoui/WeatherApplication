@@ -13,14 +13,12 @@
 
 
 enum AddCity {
-  // MARK: Use cases
-  
-  enum Something {
-    struct Request {
+    enum Failure {
+        struct Response {
+            let error: Error
+        }
+        struct ViewModel {
+            let error: String
+        }
     }
-    struct Response {
-    }
-    struct ViewModel {
-    }
-  }
 }

@@ -13,16 +13,21 @@
 import Foundation
 
 protocol AddCityPresentationLogic {
-  func presentSomething(response: AddCity.Something.Response)
+    func presentAddCityFailure(response: AddCity.Failure.Response)
+    func presentAddCitySuccess()
 }
 
 class AddCityPresenter: AddCityPresentationLogic {
-  weak var viewController: AddCityDisplayLogic?
-  
-  // MARK: Do something
-  
-  func presentSomething(response: AddCity.Something.Response) {
-    let viewModel = AddCity.Something.ViewModel()
-    viewController?.displaySomething(viewModel: viewModel)
-  }
+    // MARK: Vars
+    weak var viewController: AddCityDisplayLogic?
+    
+    // MARK: Present something
+    func presentAddCityFailure(response: AddCity.Failure.Response){
+        let viewModel = AddCity.Failure.ViewModel(error: response.error.localizedDescription)
+        self.viewController?.displayAddCityFailure(viewModel: viewModel)
+    }
+    func presentAddCitySuccess(){
+        self.viewController?.displayAddCitySuccess()
+    }
 }
+

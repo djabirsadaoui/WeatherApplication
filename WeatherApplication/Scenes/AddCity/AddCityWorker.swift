@@ -10,11 +10,22 @@
 //  see http://clean-swift.com
 //
 
-import Foundation
+import WeatherApi
+
 protocol AddCityWorkerProtocol {
-    func doSomeWork()
+    var weatherDataManager: WeatherDataManager { get set}
+    func saveCity(cityName: String,lat: Double, lon: Double, completion: @escaping(City?, WeatherError?)-> Void)
 }
-class AddCityWorker{
-  func doSomeWork() {
-  }
+class AddCityWorker: AddCityWorkerProtocol {
+    // MARK: Vars
+    var weatherDataManager = WeatherDataManager.shared
+    
+    // MARK: Works
+    func saveCity(cityName: String, lat: Double, lon: Double, completion: @escaping (City?, WeatherError?) -> Void) {
+        weatherDataManager.createCity(name: cityName, lat: lat, lon: lon) { (city, error) in
+            DispatchQueue.main.async {
+                completion(city,error)
+            }
+        }
+    }
 }

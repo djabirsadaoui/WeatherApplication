@@ -10,11 +10,21 @@
 //  see http://clean-swift.com
 //
 
-import Foundation
+import WeatherApi
 protocol ShowWeatherListWorkerProtocol {
-    func doSomeWork()
+    var weatherManagerData: WeatherDataManager { get set}
+    func fetchCities(completion: @escaping ([City]?)->Void)
 }
 class ShowWeatherListWorker{
-  func doSomeWork() {
-  }
+    // MARK: Vars
+    var weatherManagerData = WeatherDataManager.shared
+    
+    // MARK: Works
+    func fetchCities(completion: @escaping ([City]?)->Void) {
+        self.weatherManagerData.fetchCities { (cities) in
+            DispatchQueue.main.async {
+                completion(cities)
+            }
+        }
+    }
 }
