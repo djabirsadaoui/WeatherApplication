@@ -3,7 +3,7 @@
 ## Clean Architecture
 
 ## Screen shot
-![img1](./images/img3.PNG)
-![img2](./images/img2.PNG)
-![img3](./images/img1.PNG)
+![img1](./images/img3.PNG?raw=true "Cities")
+![img2](./images/img2.PNG?raw=true "Add city")
+![img3](./images/img1.PNG?raw=true "Weather")
 
