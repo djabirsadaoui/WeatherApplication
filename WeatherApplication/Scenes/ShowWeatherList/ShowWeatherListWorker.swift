@@ -21,7 +21,7 @@ class ShowWeatherListWorker{
     
     // MARK: Works
     func fetchCities(completion: @escaping ([CityEntity]?)->Void) {
-        self.weatherManagerData.fetchCities { (cities) in
+        self.weatherManagerData.loadCities { (cities) in
             DispatchQueue.main.async {
                 completion(cities)
             }
