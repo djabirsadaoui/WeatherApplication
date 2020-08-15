@@ -14,14 +14,14 @@ import WeatherApi
 
 protocol AddCityWorkerProtocol {
     var weatherDataManager: WeatherDataManager { get set}
-    func saveCity(cityName: String,lat: Double, lon: Double, completion: @escaping(City?, WeatherError?)-> Void)
+    func saveCity(cityName: String,lat: Double, lon: Double, completion: @escaping(CityEntity?, WeatherError?)-> Void)
 }
 class AddCityWorker: AddCityWorkerProtocol {
     // MARK: Vars
     var weatherDataManager = WeatherDataManager.shared
     
     // MARK: Works
-    func saveCity(cityName: String, lat: Double, lon: Double, completion: @escaping (City?, WeatherError?) -> Void) {
+    func saveCity(cityName: String, lat: Double, lon: Double, completion: @escaping (CityEntity?, WeatherError?) -> Void) {
         weatherDataManager.createCity(name: cityName, lat: lat, lon: lon) { (city, error) in
             DispatchQueue.main.async {
                 completion(city,error)

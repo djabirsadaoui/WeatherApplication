@@ -13,21 +13,21 @@
 import WeatherApi
 
 protocol ShowWeatherListBusinessLogic {
-    var currentCity: City? { get set }
-    var cities: [City] {get set}
+    var currentCity: CityEntity? { get set }
+    var cities: [CityEntity] {get set}
     func getAllCities()
 }
 
 protocol ShowWeatherListDataStore {
-    var currentCity: City? { get set }
+    var currentCity: CityEntity? { get set }
 }
 
 class ShowWeatherListInteractor: ShowWeatherListBusinessLogic, ShowWeatherListDataStore {
     // MARK: Vars
-    var cities: [City] = []
+    var cities: [CityEntity] = []
     var presenter: ShowWeatherListPresentationLogic?
     var worker: ShowWeatherListWorker?
-    var currentCity: City?
+    var currentCity: CityEntity?
     
     // MARK: Do something
     func getAllCities() {

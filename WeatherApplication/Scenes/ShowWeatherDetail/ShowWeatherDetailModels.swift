@@ -14,10 +14,15 @@
 
 import WeatherApi
 
+struct WeatherHour {
+    var icon: String?
+    var hour: String?
+    var temp: String?
+}
 enum WeatherDetail {
     enum Success {
         struct Response {
-            var currentWeather: Current
+            var weatherData: OpenWeatherEntity
         }
         struct ViewModel {
             var icon: String?
@@ -30,6 +35,7 @@ enum WeatherDetail {
             var humidity: String?
             var visibility: String?
             var winspeed: String?
+            var hours: [WeatherHour]
         }
     }
     enum Failure {

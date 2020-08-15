@@ -1,0 +1,16 @@
+PODS:
+  - WeatherApi (1.0.0)
+
+DEPENDENCIES:
+  - WeatherApi (from `../WeatherApi`)
+
+EXTERNAL SOURCES:
+  WeatherApi:
+    :path: "../WeatherApi"
+
+SPEC CHECKSUMS:
+  WeatherApi: 046af85cdd8a60c3f4eb4f53b51f79e43baedc56
+
+PODFILE CHECKSUM: d77f42cbbe9def7dd75f194c2ce3c3faf4de0f20
+
+COCOAPODS: 1.10.0.beta.1

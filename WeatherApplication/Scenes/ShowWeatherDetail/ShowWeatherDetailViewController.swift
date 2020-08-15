@@ -11,7 +11,12 @@
 //
 
 import UIKit
-
+class WeatherCollectionCell: UICollectionViewCell {
+    static let identifier = "Coll"
+    @IBOutlet weak var hourLabel: UILabel!
+    @IBOutlet weak var iconImageView: UIImageView!
+    @IBOutlet weak var tempLabel: UILabel!
+}
 protocol ShowWeatherDetailDisplayLogic: class {
     func displayWeatherDetailSuccess(viewModel: WeatherDetail.Success.ViewModel)
     func displayWeatherDetailFailure(viewModel: WeatherDetail.Failure.ViewModel)
@@ -19,6 +24,7 @@ protocol ShowWeatherDetailDisplayLogic: class {
 
 class ShowWeatherDetailViewController: UIViewController, ShowWeatherDetailDisplayLogic {
     // MARK: Outlets
+    @IBOutlet weak var collectionView: UICollectionView!
     @IBOutlet weak var imageView: UIImageView!
     @IBOutlet weak var descreptionLabel: UILabel!
     @IBOutlet weak var tempLabel: UILabel!
@@ -34,7 +40,7 @@ class ShowWeatherDetailViewController: UIViewController, ShowWeatherDetailDispla
     // MARK: Vars
     var interactor: ShowWeatherDetailBusinessLogic?
     var router: (NSObjectProtocol & ShowWeatherDetailRoutingLogic & ShowWeatherDetailDataPassing)?
-    
+    var weathers: [WeatherHour] = []
     // MARK: Object lifecycle
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
@@ -56,6 +62,7 @@ class ShowWeatherDetailViewController: UIViewController, ShowWeatherDetailDispla
     
     // MARK: configure
     func configure(){
+        self.collectionView.dataSource = self
         self.title = interactor?.currentCity?.cityName
         interactor?.getCurrentAndForcastWeather()
         startAmination()
@@ -92,6 +99,8 @@ class ShowWeatherDetailViewController: UIViewController, ShowWeatherDetailDispla
         self.humidityLabel.text = viewModel.humidity
         self.windSpeedLabel.text = viewModel.winspeed
         self.visibilityLabel.text = viewModel.visibility
+        self.weathers = viewModel.hours
+        self.collectionView.reloadData()
     }
     func displayWeatherDetailFailure(viewModel: WeatherDetail.Failure.ViewModel) {
         let alert = UIAlertController(title: "Alert", message: viewModel.error, preferredStyle: .alert)
@@ -117,4 +126,27 @@ class ShowWeatherDetailViewController: UIViewController, ShowWeatherDetailDispla
     }
 }
 
+extension ShowWeatherDetailViewController: UICollectionViewDataSource {
+    // MARK: - UICollectionViewDataSource protocol
+    
+    // tell the collection view how many cells to make
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return self.weathers.count
+    }
+    
+    // make a cell for each cell index path
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        
+        // get a reference to our storyboard cell
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: WeatherCollectionCell.identifier, for: indexPath as IndexPath) as! WeatherCollectionCell
+        
+        // Use the outlet in our custom class to get a reference to the UILabel in the cell
+        cell.hourLabel.text = self.weathers[indexPath.item].hour
+        if let icon = self.weathers[indexPath.item].icon {
+           cell.iconImageView.image = UIImage(named:icon)
+        }
+        cell.tempLabel.text = self.weathers[indexPath.item].temp
+        return cell
+    }
+}
 

@@ -22,8 +22,11 @@ class ShowWeatherDetailPresenter: ShowWeatherDetailPresentationLogic {
     
     // MARK: Present something
     func presentWeatherDetailSuccess(response: WeatherDetail.Success.Response) {
-        let currentWeather = response.currentWeather
-        let viewModel = WeatherDetail.Success.ViewModel(icon: currentWeather.weather.first?.icon, description: currentWeather.weather.first?.weatherDescription, temp: roundString(currentWeather.temp), sunrise: Date.dateString(currentWeather.sunrise), sunset: Date.dateString(currentWeather.sunset), feelslike: roundString(currentWeather.feelsLike), pressure: String(currentWeather.pressure), humidity: String(currentWeather.humidity), visibility: String(currentWeather.visibility), winspeed: String(currentWeather.windSpeed))
+        let currentWeather = response.weatherData.current
+        let hours = response.weatherData.hourlyArray.map { (current) -> WeatherHour in
+            return WeatherHour(icon: current.weatherArray.first?.icon, hour: "\(Date.dateString(current.dt, format: "HH"))h", temp: "\(roundString(current.temp))°")
+        }
+        let viewModel = WeatherDetail.Success.ViewModel(icon: currentWeather.weatherArray.first?.icon, description: currentWeather.weatherArray.first?.weatherDescription , temp: "\(roundString(currentWeather.temp))°", sunrise: Date.dateString(currentWeather.sunrise), sunset: Date.dateString(currentWeather.sunset), feelslike: "\(roundString(currentWeather.feelsLike))°", pressure: "\(currentWeather.pressure) hPa", humidity: "\(currentWeather.humidity)%", visibility: String(currentWeather.visibility), winspeed: String(currentWeather.windSpeed),hours: hours)
         self.viewController?.displayWeatherDetailSuccess(viewModel: viewModel)
     }
     func presentWeatherDetailFailure(response: WeatherDetail.Failure.Response) {

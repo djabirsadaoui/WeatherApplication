@@ -8,7 +8,10 @@
 
 import Foundation
 extension Date {
-    static func dateString(_ value:Int, format: String? = "HH:mm") -> String {
+    static func dateString(_ value:Int32?, format: String? = "HH:mm") -> String {
+        guard let value = value else {
+            return ""
+        }
         let date = Date(timeIntervalSince1970: TimeInterval(value))
         let dateFormatter = DateFormatter()
         dateFormatter.locale = Locale.current

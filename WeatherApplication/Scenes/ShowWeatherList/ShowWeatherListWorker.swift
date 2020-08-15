@@ -13,14 +13,14 @@
 import WeatherApi
 protocol ShowWeatherListWorkerProtocol {
     var weatherManagerData: WeatherDataManager { get set}
-    func fetchCities(completion: @escaping ([City]?)->Void)
+    func fetchCities(completion: @escaping ([CityEntity]?)->Void)
 }
 class ShowWeatherListWorker{
     // MARK: Vars
     var weatherManagerData = WeatherDataManager.shared
     
     // MARK: Works
-    func fetchCities(completion: @escaping ([City]?)->Void) {
+    func fetchCities(completion: @escaping ([CityEntity]?)->Void) {
         self.weatherManagerData.fetchCities { (cities) in
             DispatchQueue.main.async {
                 completion(cities)

@@ -13,15 +13,15 @@
 import WeatherApi
 protocol ShowWeatherDetailWorkerProtocol {
     var weatherService: WeatherService {get set}
-    func getCurrentAndForcastWeather(lat: Double, lon: Double, completion: @escaping (Result<Current,WeatherError>)->Void)
+    func getCurrentAndForcastWeather(city: CityEntity, completion: @escaping (Result<OpenWeatherEntity,WeatherError>)->Void)
 }
 class ShowWeatherDetailWorker: ShowWeatherDetailWorkerProtocol{
     // MARK: Vars
     var weatherService = WeatherService.shared
     
     // MARK: Works
-    func getCurrentAndForcastWeather(lat: Double, lon: Double, completion: @escaping (Result<Current, WeatherError>) -> Void) {
-        weatherService.getCurrentAndForcastWeather(lat: String(lat), lon: String(lon)) { (result) in
+    func getCurrentAndForcastWeather(city: CityEntity, completion: @escaping (Result<OpenWeatherEntity, WeatherError>) -> Void) {
+        weatherService.getCurrentAndForcastWeather(city: city) { (result) in
             DispatchQueue.main.async {
                 completion(result)
             }

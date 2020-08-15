@@ -13,30 +13,30 @@
 import WeatherApi
 
 protocol ShowWeatherDetailBusinessLogic {
-    var currentCity: City? { get set }
+    var currentCity: CityEntity? { get set }
     func getCurrentAndForcastWeather()
 }
 
 protocol ShowWeatherDetailDataStore {
-    var currentCity: City? { get set }
+    var currentCity: CityEntity? { get set }
 }
 
 class ShowWeatherDetailInteractor: ShowWeatherDetailBusinessLogic, ShowWeatherDetailDataStore {
     // MARK: Vars
     var presenter: ShowWeatherDetailPresentationLogic?
     var worker: ShowWeatherDetailWorker?
-    var currentCity: City?
+    var currentCity: CityEntity?
     
     // MARK: Do something
     func getCurrentAndForcastWeather() {
         if let city = currentCity {
-            worker?.getCurrentAndForcastWeather(lat: city.lat, lon: city.lon, completion: { [weak self] (result) in
+            worker?.getCurrentAndForcastWeather(city: city, completion: { [weak self] (result) in
                 guard let strongSelf = self else {
                     return
                 }
                 switch result {
-                case .success(let currentWeather):
-                    let response = WeatherDetail.Success.Response(currentWeather: currentWeather)
+                case .success(let weatherData):
+                    let response = WeatherDetail.Success.Response(weatherData: weatherData)
                     strongSelf.presenter?.presentWeatherDetailSuccess(response: response)
                 case .failure(let error):
                     let response = WeatherDetail.Failure.Response(error: error)
