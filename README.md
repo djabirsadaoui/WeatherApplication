@@ -23,6 +23,6 @@ Now that we have the Response from the Interactor, it’s time to format it into
 ### ViewController
 The ViewController will communicate with the Interactor, and get a response back from the Presenter. Also, when there is a need for transition, it will communicate with the Router.
 ### WeatherApi :
-[Here]: https://github.com/djabirsadaoui/WeatherApi
+[a link](https://github.com/djabirsadaoui/WeatherApi)
 
 
