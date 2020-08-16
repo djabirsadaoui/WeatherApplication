@@ -1,5 +1,5 @@
 # WeatherApplication
-
+WeatherApplication is an iOS weather app developed in Swift 4.2, it shows the current and forcast weather informations of the city of your choise.  
 ## Clean Architecture
 ![cleanArchi](./images/clean_architecture.png)
 ### Router
