@@ -26,7 +26,17 @@ class ShowWeatherDetailPresenter: ShowWeatherDetailPresentationLogic {
         let hours = response.weatherData.hourlyArray.map { (current) -> WeatherHour in
             return WeatherHour(icon: current.weatherArray.first?.icon, hour: "\(Date.dateString(current.dt, format: "HH"))h", temp: "\(roundString(current.temp))°")
         }
-        let viewModel = WeatherDetail.Success.ViewModel(icon: currentWeather.weatherArray.first?.icon, description: currentWeather.weatherArray.first?.weatherDescription , temp: "\(roundString(currentWeather.temp))°", sunrise: Date.dateString(currentWeather.sunrise), sunset: Date.dateString(currentWeather.sunset), feelslike: "\(roundString(currentWeather.feelsLike))°", pressure: "\(currentWeather.pressure) hPa", humidity: "\(currentWeather.humidity)%", visibility: String(currentWeather.visibility), winspeed: String(currentWeather.windSpeed),hours: hours)
+        let icon = currentWeather.weatherArray.first?.icon
+        let description = currentWeather.weatherArray.first?.weatherDescription
+        let temp = "\(roundString(currentWeather.temp))°"
+        let sunrise = Date.dateString(currentWeather.sunrise)
+        let sunset = Date.dateString(currentWeather.sunset)
+        let feelslike = "\(roundString(currentWeather.feelsLike))°"
+        let pressure = "\(currentWeather.pressure) hPa"
+        let humidity = "\(currentWeather.humidity) %"
+        let visibility = "\(String(currentWeather.visibility/1000)) km"
+        let winspeed = "\(roundString(currentWeather.windSpeed*3600/1000)) km/h"
+        let viewModel = WeatherDetail.Success.ViewModel(icon: icon, description: description , temp: temp, sunrise: sunrise, sunset: sunset, feelslike: feelslike, pressure: pressure, humidity: humidity, visibility: visibility, winspeed: winspeed,hours: hours)
         self.viewController?.displayWeatherDetailSuccess(viewModel: viewModel)
     }
     func presentWeatherDetailFailure(response: WeatherDetail.Failure.Response) {
