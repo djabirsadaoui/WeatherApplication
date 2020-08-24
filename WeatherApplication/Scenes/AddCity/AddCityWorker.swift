@@ -13,12 +13,12 @@
 import WeatherApi
 
 protocol AddCityWorkerProtocol {
-    var weatherDataManager: WeatherDataManager { get set}
+    var weatherDataManager: DataManager { get set}
     func saveCity(cityName: String,lat: Double, lon: Double, completion: @escaping(CityEntity?, WeatherError?)-> Void)
 }
 class AddCityWorker: AddCityWorkerProtocol {
     // MARK: Vars
-    var weatherDataManager = WeatherDataManager.shared
+    var weatherDataManager:DataManager = WeatherDataManager.shared
     
     // MARK: Works
     func saveCity(cityName: String, lat: Double, lon: Double, completion: @escaping (CityEntity?, WeatherError?) -> Void) {
